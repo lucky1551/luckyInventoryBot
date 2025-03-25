@@ -2408,42 +2408,48 @@ const BotState = {
 
 // Custom auth state handler for Postgres
 async function usePostgresAuthState() {
-  const saveState = async (state) => {
-    try {
-      const client = await pool.connect();
-      await client.query(
-        'CREATE TABLE IF NOT EXISTS auth_state (key TEXT PRIMARY KEY, value JSONB)'
-      );
-      await client.query(
-        'INSERT INTO auth_state (key, value) VALUES ($1, $2) ON CONFLICT (key) DO UPDATE SET value = $2',
-        ['state', state]
-      );
-      client.release();
-    } catch (error) {
-      console.error('Error saving auth state to Postgres:', error);
-      throw error;
-    }
-  };
+  const { Pool } = require('pg');
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+  // Ensure the table exists
+  await pool.query(`
+      CREATE TABLE IF NOT EXISTS auth_state (
+          key TEXT PRIMARY KEY,
+          value JSONB
+      )
+  `);
 
   const loadState = async () => {
-    try {
-      const client = await pool.connect();
-      const result = await client.query('SELECT value FROM auth_state WHERE key = $1', ['state']);
-      client.release();
-      return result.rows.length > 0 ? result.rows[0].value : undefined;
-    } catch (error) {
-      console.error('Error loading auth state from Postgres:', error);
-      return undefined;
-    }
+      try {
+          const result = await pool.query('SELECT value FROM auth_state WHERE key = $1', ['creds']);
+          if (result.rows[0]?.value) {
+              const creds = JSON.parse(result.rows[0].value);
+              // Verify that creds.me exists
+              if (creds && creds.me && creds.me.id) {
+                  return creds;
+              }
+          }
+          // If no valid creds exist, return null to trigger QR code generation
+          return null;
+      } catch (error) {
+          console.error('Error loading auth state from Postgres:', error);
+          return null; // Trigger QR code generation on error
+      }
   };
 
-  const state = await loadState() || {};
-  return {
-    state,
-    saveCreds: async () => {
-      await saveState(state);
-    },
+  const saveState = async (key, value) => {
+      try {
+          await pool.query(
+              'INSERT INTO auth_state (key, value) VALUES ($1, $2) ON CONFLICT (key) DO UPDATE SET value = $2',
+              [key, JSON.stringify(value)]
+          );
+      } catch (error) {
+          console.error('Error saving auth state to Postgres:', error);
+          throw error;
+      }
   };
+
+  return { loadState, saveState };
 }
 
 // Class to manage bot state and data
