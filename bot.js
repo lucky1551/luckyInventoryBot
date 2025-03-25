@@ -2407,51 +2407,59 @@ const BotState = {
 };
 
 // Custom auth state handler for Postgres
+// Replace the existing usePostgresAuthState function with this corrected version
 async function usePostgresAuthState() {
-  const { Pool } = require('pg');
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  });
 
   // Ensure the table exists
   await pool.query(`
-      CREATE TABLE IF NOT EXISTS auth_state (
-          key TEXT PRIMARY KEY,
-          value JSONB
-      )
+    CREATE TABLE IF NOT EXISTS auth_state (
+      key TEXT PRIMARY KEY,
+      value JSONB
+    )
   `);
 
   const loadState = async () => {
-      try {
-          const result = await pool.query('SELECT value FROM auth_state WHERE key = $1', ['creds']);
-          if (result.rows[0]?.value) {
-              const creds = JSON.parse(result.rows[0].value);
-              // Verify that creds.me exists
-              if (creds && creds.me && creds.me.id) {
-                  return creds;
-              }
-          }
-          // If no valid creds exist, return null to trigger QR code generation
-          return null;
-      } catch (error) {
-          console.error('Error loading auth state from Postgres:', error);
-          return null; // Trigger QR code generation on error
+    try {
+      const result = await pool.query('SELECT value FROM auth_state WHERE key = $1', ['creds']);
+      if (result.rows[0]?.value) {
+        const creds = JSON.parse(result.rows[0].value);
+        // Verify that creds.me exists
+        if (creds && creds.me && creds.me.id) {
+          return { creds };
+        }
       }
+      // Return empty creds to trigger QR generation
+      return { creds: null };
+    } catch (error) {
+      console.error('Error loading auth state from Postgres:', error);
+      return { creds: null };
+    }
   };
 
-  const saveState = async (key, value) => {
-      try {
-          await pool.query(
-              'INSERT INTO auth_state (key, value) VALUES ($1, $2) ON CONFLICT (key) DO UPDATE SET value = $2',
-              [key, JSON.stringify(value)]
-          );
-      } catch (error) {
-          console.error('Error saving auth state to Postgres:', error);
-          throw error;
-      }
+  const saveCreds = async (creds) => {
+    try {
+      await pool.query(
+        'INSERT INTO auth_state (key, value) VALUES ($1, $2) ON CONFLICT (key) DO UPDATE SET value = $2',
+        ['creds', JSON.stringify(creds)]
+      );
+    } catch (error) {
+      console.error('Error saving credentials to Postgres:', error);
+      throw error;
+    }
   };
 
-  return { loadState, saveState };
+  // Load initial state
+  const state = await loadState();
+
+  return {
+    state,
+    saveCreds
+  };
 }
-
 // Class to manage bot state and data
 class InventoryBot {
   constructor() {
@@ -2484,24 +2492,31 @@ class InventoryBot {
     this.start();
   }
 
-    async start() {
-      let auth;
-      if (process.env.DATABASE_URL) {
-        // Use Postgres auth if DATABASE_URL is set (e.g., on Heroku)
-        const { state, saveCreds } = await usePostgresAuthState();
-        auth = { state, saveCreds };
-      } else {
-        // Use file-based auth locally when DATABASE_URL is not set
-        const { state, saveCreds } = await useMultiFileAuthState('auth_info');
-        auth = { state, saveCreds };
-      }
-  
-      this.sock = makeWASocket({
-        auth: auth.state,
-        printQRInTerminal: true,
-      });
-  
-      this.sock.ev.on('creds.update', auth.saveCreds);
+   // Update the start() function's auth handling section
+async start() {
+  let auth;
+  if (process.env.DATABASE_URL) {
+    // Use Postgres auth
+    const { state, saveCreds } = await usePostgresAuthState();
+    auth = {
+      state: state,
+      saveCreds: saveCreds
+    };
+  } else {
+    // Use file-based auth locally
+    const { state, saveCreds } = await useMultiFileAuthState('auth_info');
+    auth = {
+      state: state,
+      saveCreds: saveCreds
+    };
+  }
+
+  this.sock = makeWASocket({
+    auth: auth.state,
+    printQRInTerminal: true,
+  });
+
+  this.sock.ev.on('creds.update', auth.saveCreds);
 
     this.sock.ev.on('connection.update', (update) => {
       const { connection, lastDisconnect, qr } = update;
