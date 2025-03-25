@@ -2340,7 +2340,7 @@ const pool = new Pool({
 });
 
 // Constants
-const FILE_PATH = './a_data.xlsx';
+const FILE_PATH = './inventory_register.xlsx';
 const SHEET_NAME_DEFAULT = 'Sheet1';
 const SERIAL_NUMBER_FIELD = 'S.No';
 const REQUIRED_FIELDS = ['Material Code', 'Item Description'];
