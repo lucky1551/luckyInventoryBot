@@ -1,0 +1,14 @@
+2025/03/05-00:55:14.050 8e03 Reusing MANIFEST /Users/lucky/Desktop/chat_bot_deep/chrome_profile/Default/IndexedDB/https_jindalstainless0-my.sharepoint.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/03/05-00:55:14.051 8e03 Recovering log #6
+2025/03/05-00:55:14.057 8e03 Reusing old log /Users/lucky/Desktop/chat_bot_deep/chrome_profile/Default/IndexedDB/https_jindalstainless0-my.sharepoint.com_0.indexeddb.leveldb/000006.log 
+2025/03/05-00:55:14.058 8e03 Delete type=2 #7
+2025/03/05-00:55:14.058 8e03 Delete type=2 #5
+2025/03/05-00:55:17.667 8e03 Level-0 table #11: started
+2025/03/05-00:55:17.745 8e03 Level-0 table #11: 2256895 bytes OK
+2025/03/05-00:55:17.775 8e03 Delete type=0 #6
+2025/03/05-00:55:18.023 af03 Compacting 1@1 + 1@2 files
+2025/03/05-00:55:18.076 af03 Generated table #12@1: 1414 keys, 1007238 bytes
+2025/03/05-00:55:18.077 af03 Compacted 1@1 + 1@2 files => 1007238 bytes
+2025/03/05-00:55:18.111 af03 compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/03/05-00:55:18.112 af03 Delete type=2 #11
+2025/03/05-00:55:18.112 af03 Delete type=2 #8

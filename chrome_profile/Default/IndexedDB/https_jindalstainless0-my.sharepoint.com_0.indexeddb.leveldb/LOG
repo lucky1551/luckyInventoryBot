@@ -1,0 +1,21 @@
+2025/03/05-00:55:55.089 8f03 Reusing MANIFEST /Users/lucky/Desktop/chat_bot_deep/chrome_profile/Default/IndexedDB/https_jindalstainless0-my.sharepoint.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/03/05-00:55:55.090 8f03 Recovering log #10
+2025/03/05-00:55:55.105 8f03 Reusing old log /Users/lucky/Desktop/chat_bot_deep/chrome_profile/Default/IndexedDB/https_jindalstainless0-my.sharepoint.com_0.indexeddb.leveldb/000010.log 
+2025/03/05-00:55:57.895 8f03 Level-0 table #15: started
+2025/03/05-00:55:57.947 8f03 Level-0 table #15: 1945485 bytes OK
+2025/03/05-00:55:57.981 8f03 Delete type=0 #10
+2025/03/05-00:55:58.186 6807 Compacting 1@1 + 1@2 files
+2025/03/05-00:55:58.232 6807 Generated table #16@1: 1543 keys, 872179 bytes
+2025/03/05-00:55:58.233 6807 Compacted 1@1 + 1@2 files => 872179 bytes
+2025/03/05-00:55:58.263 6807 compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/03/05-00:55:58.263 6807 Delete type=2 #15
+2025/03/05-00:55:58.264 6807 Delete type=2 #12
+2025/03/05-00:56:13.050 8f03 Level-0 table #18: started
+2025/03/05-00:56:13.111 8f03 Level-0 table #18: 2583022 bytes OK
+2025/03/05-00:56:13.138 8f03 Delete type=0 #14
+2025/03/05-00:56:13.165 8f03 Compacting 1@1 + 1@2 files
+2025/03/05-00:56:13.203 8f03 Generated table #19@1: 1757 keys, 996500 bytes
+2025/03/05-00:56:13.203 8f03 Compacted 1@1 + 1@2 files => 996500 bytes
+2025/03/05-00:56:13.233 8f03 compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/03/05-00:56:13.234 8f03 Delete type=2 #16
+2025/03/05-00:56:13.234 8f03 Delete type=2 #18

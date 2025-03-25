@@ -1,0 +1,25 @@
+{
+  "name": "chat_bot_deep",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@azure/msal-node": "^3.2.3",
+    "@whiskeysockets/baileys": "^6.7.16",
+    "axios": "^1.8.1",
+    "dotenv": "^16.4.7",
+    "googleapis": "^148.0.0",
+    "pg": "^8.14.1",
+    "puppeteer": "^24.2.1",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.26.0",
+    "xlsx": "^0.18.5"
+  }
+}
